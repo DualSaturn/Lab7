@@ -84,7 +84,15 @@
       // The main difference from fetchOne() will be the URL you request from; check
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchAll() {
-        // TODO
+        const newForm = document.getElementById('recordForm');
+        newForm.style.display = 'none';
+        const endpt = document.getElementById('endpoint');
+        const endurl = endpt.value;
+        const outpt = document.getElementById('output');
+        
+        fetch(endurl)
+          .then(response => response.json())
+          .then(data => outpt.innerHTML = JSON.stringify(data));
       }
 
       // This function should fetch one entry from the given endpoint.
@@ -92,7 +100,15 @@
       // The main difference from fetchAll() will be the URL you request from; check
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchOne() {
-        // TODO
+        const newForm = document.getElementById('recordForm');
+        newForm.style.display = 'none';
+        const fetchId = window.prompt('Enter record id');
+        const endpt = document.getElementById('endpoint');
+        const endurl = endpt.value + '/' + fetchId;
+        const outpt = document.getElementById('output');
+        fetch(endurl)
+          .then(response => response.json())
+          .then(data => outpt.innerHTML = JSON.stringify(data));
       }
 
       // This function should use fetch to create one entry in the given endpoint.
@@ -100,7 +116,27 @@
       // The main difference from updateRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
       function createRecord() {
-        // TODO
+        const newForm = document.getElementById('recordForm');
+        newForm.style.display = 'block';
+        newForm.addEventListener('submit', event => {
+          event.preventDefault();
+          const endpt = document.getElementById('endpoint');
+          const endurl = endpt.value;
+          const outpt = document.getElementById('output');
+          const postdata = {
+            "title":document.getElementById('title').value,
+            "author":document.getElementById('author').value,
+          }
+          fetch(endurl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(postdata)
+          })
+          .then(response => response.json())
+          .then(data => outpt.innerHTML = JSON.stringify(data));
+        });
       }
 
       // This function should use fetch to update one existing entry in the given endpoint.
@@ -108,7 +144,26 @@
       // The main difference from createRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
       function updateRecord() {
-        // TODO
+        const newForm = document.getElementById('recordForm');
+        newForm.style.display = 'block';
+        newForm.addEventListener('submit', event => {
+          event.preventDefault();
+          const endpt = document.getElementById('endpoint');
+          const endurl = endpt.value;
+          const outpt = document.getElementById('output');
+          const data = {
+            "title":document.getElementById('title').value,
+            "author":document.getElementById('author').value,
+          }
+          fetch(endurl, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+          
+        });
       }
 
       // This function should use fetch to delete one existing entry in the given endpoint.
