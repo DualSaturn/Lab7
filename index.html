@@ -84,6 +84,8 @@
       // The main difference from fetchOne() will be the URL you request from; check
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchAll() {
+        const recordField = document.getElementById('recordIDcontainer');
+        recordField.style.display = 'none';
         const newForm = document.getElementById('recordForm');
         newForm.style.display = 'none';
         const endpt = document.getElementById('endpoint');
@@ -91,8 +93,14 @@
         const outpt = document.getElementById('output');
         
         fetch(endurl)
-          .then(response => response.json())
-          .then(data => outpt.innerHTML = JSON.stringify(data));
+          .then(response => {
+            if (!response.ok){
+              throw new Error('Network Error: ' + response.status);
+            }
+            return response.json()
+          })
+          .then(data => outpt.innerHTML = JSON.stringify(data))
+          .catch(error => outpt.innerHTML = error.message);
       }
 
       // This function should fetch one entry from the given endpoint.
@@ -100,6 +108,8 @@
       // The main difference from fetchAll() will be the URL you request from; check
       // the writeup to view the URL pattern for fetch one and fetch all
       function fetchOne() {
+        const recordField = document.getElementById('recordIDcontainer');
+        recordField.style.display = 'none';
         const newForm = document.getElementById('recordForm');
         newForm.style.display = 'none';
         const fetchId = window.prompt('Enter record id');
@@ -107,8 +117,14 @@
         const endurl = endpt.value + '/' + fetchId;
         const outpt = document.getElementById('output');
         fetch(endurl)
-          .then(response => response.json())
-          .then(data => outpt.innerHTML = JSON.stringify(data));
+          .then(response => {
+            if (!response.ok){
+              throw new Error('Network Error: ' + response.status);
+            }
+            return response.json()
+          })
+          .then(data => outpt.innerHTML = JSON.stringify(data))
+          .catch(error => outpt.innerHTML = error.message);
       }
 
       // This function should use fetch to create one entry in the given endpoint.
@@ -116,9 +132,11 @@
       // The main difference from updateRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
       function createRecord() {
+        const recordField = document.getElementById('recordIDcontainer');
+        recordField.style.display = 'none';
         const newForm = document.getElementById('recordForm');
         newForm.style.display = 'block';
-        newForm.addEventListener('submit', event => {
+        newForm.onsubmit =  event => {
           event.preventDefault();
           const endpt = document.getElementById('endpoint');
           const endurl = endpt.value;
@@ -134,9 +152,16 @@
             },
             body: JSON.stringify(postdata)
           })
-          .then(response => response.json())
-          .then(data => outpt.innerHTML = JSON.stringify(data));
-        });
+          .then(response => {
+            if (!response.ok){
+              throw new Error('Network Error: ' + response.status);
+            }
+            return response.json()
+          })
+          .then(data => outpt.innerHTML = JSON.stringify(data))
+          .catch(error => outpt.innerHTML = error.message);
+        };
+        
       }
 
       // This function should use fetch to update one existing entry in the given endpoint.
@@ -144,12 +169,14 @@
       // The main difference from createRecord() will be the URL you send data to; check
       // the writeup to view the URL pattern for create and update
       function updateRecord() {
+        const recordField = document.getElementById('recordIDcontainer');
+        recordField.style.display = 'block';
         const newForm = document.getElementById('recordForm');
         newForm.style.display = 'block';
-        newForm.addEventListener('submit', event => {
+        newForm.onsubmit = event => {
           event.preventDefault();
           const endpt = document.getElementById('endpoint');
-          const endurl = endpt.value;
+          const endurl = endpt.value + '/' + document.getElementById('recordID').value;
           const outpt = document.getElementById('output');
           const data = {
             "title":document.getElementById('title').value,
@@ -161,9 +188,17 @@
               'Content-Type': 'application/json'
             },
             body: JSON.stringify(data)
-          });
+          })
+          .then(response => {
+            if (!response.ok){
+              throw new Error('Network Error: ' + response.status);
+            }
+            return response.json()
+          })
+          .then(data => outpt.innerHTML = JSON.stringify(data))
+          .catch(error => outpt.innerHTML = error.message);
           
-        });
+        };
       }
 
       // This function should use fetch to delete one existing entry in the given endpoint.
@@ -172,7 +207,23 @@
       // request; check the writeup to view the URL pattern for get one and delete. THERE IS NO 
       // delete all, only delete one.
       function deleteRecord() {
-        // TODO
+        const recordField = document.getElementById('recordIDcontainer');
+        recordField.style.display = 'none';
+        const newForm = document.getElementById('recordForm');
+        newForm.style.display = 'none';
+        const fetchId = window.prompt('Enter record id');
+        const endpt = document.getElementById('endpoint');
+        const endurl = endpt.value + '/' + fetchId;
+        const outpt = document.getElementById('output');
+        fetch(endurl, {method: "DELETE"})
+          .then(response => {
+            if (!response.ok){
+              throw new Error('Network Error: ' + response.status);
+            }
+            return response.json()
+          })
+          .then(data => outpt.innerHTML = JSON.stringify(data))
+          .catch(error => outpt.innerHTML = error.message);
       }
 
       window.addEventListener('DOMContentLoaded', () => {
